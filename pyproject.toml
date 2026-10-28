@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "changegate"
+version = "0.1.0"
+description = "Deterministic verification gate for agent-authored changes: secrets, PII, test tampering, diff scope, and optional repo checks."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "A-G0D" }]
+keywords = ["agents", "ai", "verification", "security", "secrets", "ci", "git", "code-review"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Security",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[project.scripts]
+changegate = "changegate.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/A-G0D/changegate"
+Issues = "https://github.com/A-G0D/changegate/issues"
+Changelog = "https://github.com/A-G0D/changegate/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+include = ["changegate*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E402"]
+"demo/*" = ["E402"]

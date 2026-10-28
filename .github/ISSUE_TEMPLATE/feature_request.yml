@@ -1,0 +1,34 @@
+name: Feature request
+description: Suggest a rule, check, or workflow improvement
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What false negative or false positive are you hitting? A concrete diff helps.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: |
+        If this adds a rule: is it `error` (must block) or `warning`? How does it avoid flagging
+        normal code? Would it need a placeholder/allowlist path?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Confirmations
+      options:
+        - label: This does not weaken an existing default check.
+          required: true
+        - label: This works offline (no network dependency).
+          required: true

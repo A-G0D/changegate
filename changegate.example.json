@@ -1,0 +1,29 @@
+{
+  "max_files": 12,
+  "max_added_lines": 400,
+  "max_removed_lines": 400,
+  "allow_tests": false,
+  "allow_binary": false,
+  "forbidden": [
+    ".github/**",
+    "*.lock",
+    "uv.lock",
+    "poetry.lock",
+    "package-lock.json",
+    "yarn.lock",
+    "pnpm-lock.yaml",
+    "requirements*.txt",
+    ".env",
+    ".env.*",
+    "Dockerfile",
+    "docker-compose*.yml",
+    "*.pem",
+    "*.key"
+  ],
+  "allowed": ["**"],
+  "ignore": ["docs/generated/**"],
+  "dangerous": "warning",
+  "test_cmd": "pytest -q",
+  "lint_cmd": "ruff check .",
+  "command_timeout_s": 300
+}
