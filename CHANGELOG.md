@@ -6,6 +6,15 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Added
+- `--patch -` reads a unified diff from stdin, so a diff can be gated without persisting it to a
+  file.
+
+### Fixed
+- Test fixtures no longer persist credential-shaped strings to disk. The CLI secret test streams
+  its synthetic fixture through stdin. Resolves CodeQL `py/clear-text-storage-sensitive-data` on
+  `tests/test_cli.py:49` (monitor feedback, 2026-10-28: opened 05:17:28Z, fixed 05:22:29Z).
+
 ### Planned
 - SARIF output so GitHub code scanning renders findings as annotations.
 - Optional full-history secret scan (`--history`) as a complement to the diff scan.
@@ -20,8 +29,7 @@ First public release: the gate is usable in CI and as a pre-commit check.
 
 ### Added
 - `changegate check` with four diff sources: patch file (`--patch`), staged changes (`--staged`),
-  merge-base pull-request mode (`--base`), and the working tree (default); `--patch -` reads
-  the diff from stdin.
+  merge-base pull-request mode (`--base`), and the working tree (default).
 - Scope gate: max files, max added/removed lines, forbidden path globs (CI config, lockfiles,
   dependency manifests, `.env`, Dockerfiles, key material) and an optional allowed-path list.
 - Binary-change gate (rejected by default, `--allow-binary` to opt out).
