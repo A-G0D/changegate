@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import io
 import json
 import os
 import shutil
@@ -9,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -25,14 +27,31 @@ diff --git a/app.py b/app.py
 """
 
 
-def fake_secret_patch() -> str:
-    secret = "API_KEY = " + '"' + "a" * 30 + '"'
+FORBIDDEN_PATH_PATCH = """\
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+new file mode 100644
+--- /dev/null
++++ b/.github/workflows/ci.yml
+@@ -0,0 +1,2 @@
++on: push
++jobs: {}
+"""
+
+
+def secret_patch() -> str:
+    """A patch that adds a credential-shaped line, built at runtime.
+
+    The tests stream it through stdin instead of writing it to disk: this repository must not
+    persist credential-shaped strings, because secret scanners and CodeQL both treat that as a
+    genuine finding even when the fixture is synthetic.
+    """
+    secret = "sk-" + "a" * 30
     return (
         "diff --git a/config.py b/config.py\n"
         "--- a/config.py\n"
         "+++ b/config.py\n"
         "@@ -0,0 +1,1 @@\n"
-        f"+  {secret}\n"
+        f'+API_KEY = "{secret}"\n'
     )
 
 
@@ -55,13 +74,16 @@ class TestCli(unittest.TestCase):
     def test_clean_patch_passes(self):
         self.assertEqual(main(["check", "--patch", self.write(CLEAN_PATCH)]), 0)
 
-    def test_secret_patch_fails(self):
-        rc = main(["check", "--patch", self.write(fake_secret_patch())])
-        self.assertEqual(rc, 1)
+    def test_secret_patch_on_stdin_fails(self):
+        with mock.patch("sys.stdin", io.StringIO(secret_patch())):
+            self.assertEqual(main(["check", "--patch", "-"]), 1)
+
+    def test_forbidden_path_patch_fails(self):
+        self.assertEqual(main(["check", "--patch", self.write(FORBIDDEN_PATH_PATCH)]), 1)
 
     def test_json_report_written(self):
         out = os.path.join(self.tmp, "report.json")
-        rc = main(["check", "--patch", self.write(fake_secret_patch()), "--json-out", out])
+        rc = main(["check", "--patch", self.write(FORBIDDEN_PATH_PATCH), "--json-out", out])
         self.assertEqual(rc, 1)
         with open(out, encoding="utf-8") as fh:
             payload = json.load(fh)

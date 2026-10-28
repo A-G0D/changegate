@@ -37,6 +37,9 @@ Python 3.10+. No runtime dependencies use only the standard library.
 # 1. gate a patch file (no git repository needed)
 changegate check --patch change.diff
 
+# 1b. ...or stream the diff on stdin
+git -C /path/to/repo diff | changegate check --patch -
+
 # 2. gate uncommitted changes in the current repository
 changegate check
 

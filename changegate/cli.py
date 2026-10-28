@@ -103,7 +103,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     check.add_argument("--repo", default=None, help="repository path (default: current directory)")
     source = check.add_mutually_exclusive_group()
-    source.add_argument("--patch", default=None, help="read a unified diff from a file")
+    source.add_argument(
+        "--patch",
+        default=None,
+        help="read a unified diff from a file, or - for stdin",
+    )
     source.add_argument("--base", default=None, help="diff this base ref against HEAD (CI mode)")
     source.add_argument("--staged", action="store_true", help="diff staged changes only")
     check.add_argument("--config", default=None, help="JSON config file (default: none)")

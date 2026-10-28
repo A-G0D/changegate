@@ -20,7 +20,8 @@ First public release: the gate is usable in CI and as a pre-commit check.
 
 ### Added
 - `changegate check` with four diff sources: patch file (`--patch`), staged changes (`--staged`),
-  merge-base pull-request mode (`--base`), and the working tree (default).
+  merge-base pull-request mode (`--base`), and the working tree (default); `--patch -` reads
+  the diff from stdin.
 - Scope gate: max files, max added/removed lines, forbidden path globs (CI config, lockfiles,
   dependency manifests, `.env`, Dockerfiles, key material) and an optional allowed-path list.
 - Binary-change gate (rejected by default, `--allow-binary` to opt out).

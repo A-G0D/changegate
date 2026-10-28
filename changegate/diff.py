@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import re
 import subprocess
+import sys
 from dataclasses import dataclass, field
 
 GIT_DIFF_FLAGS = ("--no-color", "--unified=0", "--find-renames", "--no-ext-diff")
@@ -199,7 +200,12 @@ def untracked_files(repo: str) -> list[str]:
 
 
 def read_patch(path: str) -> str:
-    """Read a patch file, with a clear error instead of a traceback."""
+    """Read a patch file (or ``-`` for stdin), with a clear error instead of a traceback."""
+    if path == "-":
+        try:
+            return sys.stdin.read()
+        except OSError as exc:  # pragma: no cover - platform dependent
+            raise DiffError(f"cannot read patch from stdin: {exc}") from exc
     try:
         with open(path, encoding="utf-8", errors="replace") as fh:
             return fh.read()
